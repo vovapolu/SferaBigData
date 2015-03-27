@@ -1,0 +1,90 @@
+Extra Trees + Extra Trees
+CV score: 7.94648602564
+Only Extra Trees
+CV score: 8.16028992949
+Random Forest + Extra Trees
+CV score: 8.41645828205
+Random Forest + Random Forest
+CV score: 8.69975892949
+Only Random Forest
+CV score: 9.00593339103
+Extra Trees + Random Forest
+CV score: 9.01669334615
+KBest + Extra Trees
+CV score: 9.31828014744
+Randomized PCA + Extra Trees
+CV score: 9.68412116667
+PCA + Extra Trees
+CV score: 9.81061353846
+KBest + Random Forest
+CV score: 10.8732600577
+PCA + Random Forest
+CV score: 10.9906055192
+Randomized PCA + Random Forest
+CV score: 11.2710681154
+Linear SVC + Random Forest
+CV score: 12.3357022733
+Decision Tree + Extra Trees
+CV score: 12.6108356667
+Fast ICA + Linear Regression
+CV score: 12.6579546718
+Only Linear Regression
+CV score: 12.6579546718
+Randomized PCA + Linear Regression
+CV score: 12.6579546718
+Fast ICA + Extra Trees
+CV score: 12.8916367949
+Extra Trees + Decision Tree
+CV score: 13.0937467949
+Only Decision Tree
+CV score: 13.2648884615
+Extra Trees + Linear Regression
+CV score: 13.3837130345
+Random Forest + Linear Regression
+CV score: 13.3837130345
+PCA + Linear Regression
+CV score: 13.44643356
+KBest + Decision Tree
+CV score: 13.5376570513
+Random Forest + Decision Tree
+CV score: 13.5974487179
+Linear SVC + Extra Trees
+CV score: 13.7223500833
+Decision Tree + Random Forest
+CV score: 13.9050782885
+KBest + Linear Regression
+CV score: 14.4990724552
+Fast ICA + Random Forest
+CV score: 15.4181360192
+PCA + SVR
+CV score: 15.8252910918
+Decision Tree + Linear Regression
+CV score: 15.8617825565
+Randomized PCA + SVR
+CV score: 15.9959497585
+Linear SVC + Decision Tree
+CV score: 17.8970477208
+Linear SVC + Linear Regression
+CV score: 17.9940056433
+PCA + Decision Tree
+CV score: 18.3053012821
+Randomized PCA + Decision Tree
+CV score: 19.2422275641
+Decision Tree + Decision Tree
+CV score: 20.3563096154
+Fast ICA + Decision Tree
+CV score: 20.4989294872
+Linear SVC + SVR
+CV score: 54.6436631989
+Fast ICA + SVR
+CV score: 66.9480743362
+KBest + SVR
+CV score: 69.2767290848
+Decision Tree + SVR
+CV score: 69.3148022017
+Only SVR
+CV score: 69.3181641096
+Extra Trees + SVR
+CV score: 69.3441208015
+Random Forest + SVR
+CV score: 69.3441208015

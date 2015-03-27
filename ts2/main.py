@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import numpy as np
 from sklearn import svm
 from sklearn.feature_selection import SelectKBest
@@ -19,6 +20,8 @@ def load_data():
 def CV(clf, X, y):
     return cross_validation.cross_val_score(clf, X, y, cv=KFold(X.shape[0], n_folds=10), scoring="mean_squared_error")
     
+sys.stdout = file("results.txt", "w")
+
 X, y = load_data();
 
 featureSelectors = [("Random Forest", RandomForestClassifier()), ("PCA", PCA(n_components="mle", whiten=True)), 
