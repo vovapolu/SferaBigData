@@ -8,8 +8,8 @@ from sklearn import cross_validation
 from sklearn.cross_validation import KFold
 from sklearn.feature_selection import SelectKBest
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor 
-from sklearn.decomposition import PCA, RandomizedPCA, FastICA, KernelPCA
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, ExtraTreesClassifier, ExtraTreesRegressor
+from sklearn.decomposition import PCA, RandomizedPCA, FastICA
 
 def load_data():
     with file("data.txt", "r") as dataFile:
@@ -21,20 +21,27 @@ def CV(clf, X, y):
     
 X, y = load_data();
 
-featureSelectors = [("Random Forest", RandomForestClassifier()), ("PCA", PCA()), 
+featureSelectors = [("Random Forest", RandomForestClassifier()), ("PCA", PCA(n_components="mle", whiten=True)), 
                     ("Decision Tree", DecisionTreeClassifier()), ("KBest", SelectKBest(k=5)),
-                    ("Linear SVC", svm.LinearSVC()), ("Randomized PCA", RandomizedPCA()), 
-                    ("Fast ICA", FastICA()), ("Kernel ICA", KernelPCA())]
+                    ("Linear SVC", svm.LinearSVC()), ("Randomized PCA", RandomizedPCA(whiten=True)), 
+                    ("Fast ICA", FastICA(whiten=True)), ("Extra Trees", ExtraTreesClassifier())]
+                    
 regressions = [("Linear Regression", LinearRegression()), ("Decision Tree", DecisionTreeRegressor()),
-               ("SVR", svm.SVR())]
+               ("SVR", svm.SVR()), ("Random Forest", RandomForestRegressor()), ("Extra Trees", ExtraTreesRegressor())]
+
+results = []
 
 for selector in featureSelectors:
     for regression in regressions:
         clf = Pipeline([("feature selector", selector[1]), ("regression", regression[1])])
-        print selector[0], "+", regression[0]
-        print "CV score", -np.mean(CV(clf, X, y))
+        results.append((-np.mean(CV(clf, X, y)), selector[0] + " + " + regression[0]))
         
 for regression in regressions:
     clf = regression[1]
-    print "Only", regression[0]
-    print "CV score", -np.mean(CV(clf, X, y))
+    results.append((-np.mean(CV(clf, X, y)), "Only " + regression[0]))
+
+results.sort()
+
+for result in results:
+    print result[1]
+    print "CV score:", result[0]
