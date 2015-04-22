@@ -16,7 +16,7 @@ def CV(clf, X, y):
 
 def testBoosting():
     scores = []
-    treesCount = 50
+    treesCount = 30
     for i in xrange(1, treesCount):
         boost = GradientBoosting(i)
         cvScore = CV(boost, X, y)
@@ -27,7 +27,7 @@ def testBoosting():
 
 def testRandomForest():
     scores = []
-    treesCount = 100
+    treesCount = 10
     for i in xrange(1, treesCount):
         forest = RandomForest(i)
         cvScore = CV(forest, X, y)
@@ -38,5 +38,5 @@ def testRandomForest():
 
 X, y = load_data()
 
-testBoosting()
+#testBoosting()
 testRandomForest()

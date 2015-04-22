@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree.tree import DecisionTreeClassifier
+from cart_tree import CartTree
 
 class SelectedFeaturesDecisionTree(BaseEstimator, RegressorMixin):
     """
@@ -9,7 +10,7 @@ class SelectedFeaturesDecisionTree(BaseEstimator, RegressorMixin):
 
     def __init__(self, selectedFeatures):
         self.selectedFeatures = selectedFeatures
-        self.tree = DecisionTreeClassifier()
+        self.tree = CartTree(maxDepth=5)
 
     def fit(self, X, y):
         self.tree.fit(X[:, self.selectedFeatures], y)

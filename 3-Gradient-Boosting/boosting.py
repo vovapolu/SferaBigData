@@ -1,6 +1,7 @@
 import numpy as np
-from sklearn.tree import DecisionTreeRegressor
 from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.tree.tree import DecisionTreeClassifier
+from cart_tree import CartTree
 
 class ConstrantTree():
     """
@@ -42,7 +43,7 @@ class GradientBoosting(BaseEstimator, RegressorMixin):
 
         for i in xrange(1, self.iterationsNumber):
             newY = 2 * (y - self.particalPredict(X, i))
-            self.trees[i] = DecisionTreeRegressor(max_depth=2)
+            self.trees[i] = DecisionTreeClassifier(max_depth=3)#CartTree()
             self.trees[i].fit(X, newY)
             newYPredict = self.trees[i].predict(X)
             self.treeWeights[i] = sum((newY / 2) * newYPredict) / sum(newYPredict ** 2)
