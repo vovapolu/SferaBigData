@@ -43,7 +43,7 @@ class GradientBoosting(BaseEstimator, RegressorMixin):
 
         for i in xrange(1, self.iterationsNumber):
             newY = 2 * (y - self.particalPredict(X, i))
-            self.trees[i] = DecisionTreeClassifier(max_depth=3)#CartTree()
+            self.trees[i] = CartTree()
             self.trees[i].fit(X, newY)
             newYPredict = self.trees[i].predict(X)
             self.treeWeights[i] = sum((newY / 2) * newYPredict) / sum(newYPredict ** 2)

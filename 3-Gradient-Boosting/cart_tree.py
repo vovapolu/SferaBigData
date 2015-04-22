@@ -35,33 +35,49 @@ class CartTree(BaseEstimator, RegressorMixin):
     def __init__(self, maxDepth=2):
         self.maxDepth = maxDepth
 
-    def calcSplit(self, feature, y, splitVal):
-        splitLeftMean = np.mean(y[feature < splitVal])
-        splitRightMean = np.mean(y[feature >= splitVal])
-        if not np.isnan(splitLeftMean) and not np.isnan(splitRightMean):
-            splitLeftMse = np.mean((y[feature < splitVal] - splitLeftMean) ** 2)
-            splitRightMse = np.mean((y[feature >= splitVal] - splitRightMean) ** 2)
-            return splitLeftMse + splitRightMse
-        else:
-            return np.mean((y - np.mean(y)) ** 2)
-
     def findBestSplit(self, feature, y):
         sortedInds = np.argsort(feature)
-        sortedFeature = feature[sortedInds]
-        sortedY = y[sortedInds]
+        feature = feature[sortedInds]
+        y = y[sortedInds]
 
-        bestSplitVal = np.mean(sortedFeature)
-        bestSplitCalc = self.calcSplit(sortedFeature, sortedY, bestSplitVal)
-        for i in xrange(sortedFeature.shape[0] - 1):
-            if sortedFeature[i] != sortedFeature[i + 1]:
-                nowSplitVal = (sortedFeature[i] + sortedFeature[i + 1]) / 2.0
-                nowSplitCalc = self.calcSplit(sortedFeature, sortedY, nowSplitVal)
-                if nowSplitCalc < bestSplitCalc:
-                    bestSplitCalc = nowSplitCalc
-                    bestSplitVal = nowSplitVal
+        leftSum = y[0]
+        leftCnt = 1
+        rightCnt = y.shape[0] - 1
+        while leftCnt < feature.shape[0] - 1 and feature[leftCnt - 1] == feature[leftCnt]:
+            leftCnt += 1
+            rightCnt -= 1
+            leftSum += y[leftCnt - 1]
 
-        return bestSplitVal, bestSplitCalc
+        rightSum = np.sum(y) - leftSum
+        leftMse = np.sum((y[:leftCnt] - leftSum / leftCnt) ** 2)
+        rightMse = np.sum((y[leftCnt:] - rightSum / rightCnt) ** 2) if rightCnt > 0 else 0
 
+        bestSplit = leftCnt - 1
+        bestMse = leftMse / (leftCnt + 1) + ((rightMse / rightCnt) if rightCnt > 0 else 0)
+
+        for leftCnt in xrange(leftCnt + 1, feature.shape[0]):
+            rightCnt -= 1
+
+            leftDeltaMse = (leftSum - (leftCnt - 1) * y[leftCnt - 1]) / (leftCnt * (leftCnt - 1))
+            leftSum += y[leftCnt - 1]
+            leftMse += leftDeltaMse * leftDeltaMse * (leftCnt - 1) + (y[leftCnt - 1] - leftSum / leftCnt) ** 2
+
+            rightDeltaMse = (rightSum - (rightCnt + 1) * y[leftCnt - 1]) / (rightCnt * (rightCnt + 1))
+            rightMse += -(y[leftCnt - 1] - (rightSum / (rightCnt + 1))) ** 2 - rightDeltaMse * rightDeltaMse * rightCnt
+            rightSum -= y[leftCnt - 1]
+
+            allMse = leftMse / leftCnt + ((rightMse / rightCnt) if rightCnt > 0 else 0)
+
+            if feature[leftCnt - 1] != feature[leftCnt]:
+                if allMse < bestMse:
+                    bestSplit = leftCnt - 1
+                    bestMse = allMse
+
+        if bestSplit < feature.shape[0] - 1:
+            bestSplitVal = (feature[bestSplit] + feature[bestSplit + 1]) / 2.0
+        else:
+            bestSplitVal = feature[bestSplit] + 1
+        return bestSplitVal, bestMse
 
     def createNode(self, X, y, depth):
         if X.shape[0] == 0:
