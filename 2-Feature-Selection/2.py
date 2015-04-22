@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import numpy as np
+from scipy.linalg.decomp_schur import eps
 from sklearn.svm import SVR
 from sklearn.feature_selection import SelectKBest
 from sklearn.pipeline import Pipeline
@@ -48,15 +49,18 @@ def getFeatureSelectors(bestFeaturesNumber):
                         ("KBest", SelectKBest(k=bestFeaturesNumber)),
                         ("Randomized PCA", RandomizedPCA(n_components=bestFeaturesNumber, whiten=True)),
                         ("Fast ICA", FastICA(n_components=bestFeaturesNumber, whiten=True)),
-                        ("Extra Trees", TreeFeatureSelector(ExtraTreesClassifier(), bestFeaturesNumber))]
+                        ("Extra Trees", TreeFeatureSelector(ExtraTreesClassifier(), bestFeaturesNumber))
+                        ]
 
     return featureSelectors
 
-regressions = [("Linear Regression", LinearRegression()),
-               ("Decision Tree", DecisionTreeRegressor()),
-               ("SVR", SVR()),
-               ("Random Forest", RandomForestRegressor()),
-               ("Extra Trees", ExtraTreesRegressor())]
+
+regressions = [#("Linear Regression", LinearRegression()),
+               #("Decision Tree", DecisionTreeRegressor()),
+               ("SVR", SVR(C=1e5, epsilon=0.1, gamma=0.0001))
+               #("Random Forest", RandomForestRegressor()),
+               #("Extra Trees", ExtraTreesRegressor()),
+               ]
 
 nowPlot = 0
 
@@ -88,7 +92,11 @@ for regression in regressions:
         selectorNum = 0
         for selector in selectors:
             clf = Pipeline([("feature selector", selector[1]), ("regression", regression[1])])
-            points[selectorNum][number - 1] = -np.mean(CV(clf, X, y))
+            regression[1].fit(X[:X.shape[0] / 10], y[:y.shape[0] / 10])
+            print regression[0]
+            print regression[1].predict(X) - y
+            print np.mean((regression[1].predict(X) - y) ** 2)
+            #points[selectorNum][number - 1] = -np.mean(CV(clf, X, y))
             selectorNum += 1
 
     for selectorNum in xrange(featureSelectorsCount):
